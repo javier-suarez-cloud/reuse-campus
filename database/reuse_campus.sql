@@ -1,0 +1,50 @@
+CREATE DATABASE IF NOT EXISTS reuse_campus
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE reuse_campus;
+
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  correo VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  rol ENUM('USUARIO','ADMINISTRADOR') NOT NULL DEFAULT 'USUARIO',
+  estado ENUM('ACTIVO','INACTIVO') NOT NULL DEFAULT 'ACTIVO'
+);
+
+CREATE TABLE publicaciones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(150) NOT NULL,
+  descripcion TEXT NOT NULL,
+  categoria VARCHAR(50) NOT NULL,
+  modalidad ENUM('DONACION','INTERCAMBIO') NOT NULL,
+  estado ENUM('DISPONIBLE','RESERVADA','ENTREGADA','CANCELADA') NOT NULL DEFAULT 'DISPONIBLE',
+  fecha_publicacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  usuario_id INT NOT NULL,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE solicitudes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  publicacion_id INT NOT NULL,
+  solicitante_id INT NOT NULL,
+  mensaje VARCHAR(255),
+  fecha_solicitud DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  estado ENUM('PENDIENTE','ACEPTADA','RECHAZADA','CANCELADA') NOT NULL DEFAULT 'PENDIENTE',
+  FOREIGN KEY (publicacion_id) REFERENCES publicaciones(id),
+  FOREIGN KEY (solicitante_id) REFERENCES usuarios(id)
+);
+
+CREATE TABLE entregas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  publicacion_id INT NOT NULL,
+  solicitud_id INT NOT NULL UNIQUE,
+  propietario_id INT NOT NULL,
+  receptor_id INT NOT NULL,
+  fecha_acuerdo DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  fecha_entrega DATETIME NULL,
+  estado ENUM('PENDIENTE','COMPLETADA') NOT NULL DEFAULT 'PENDIENTE',
+  FOREIGN KEY (publicacion_id) REFERENCES publicaciones(id),
+  FOREIGN KEY (solicitud_id) REFERENCES solicitudes(id),
+  FOREIGN KEY (propietario_id) REFERENCES usuarios(id),
+  FOREIGN KEY (receptor_id) REFERENCES usuarios(id)
+);
