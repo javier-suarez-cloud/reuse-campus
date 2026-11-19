@@ -8,7 +8,8 @@ const router = express.Router();
 
 // POST /api/auth/registro  -> crea un usuario con la contraseña encriptada
 router.post('/registro', (req, res) => {
-  const { nombre, correo, password } = req.body;
+  // "?? {}" evita un error 500 si la petición llega sin cuerpo JSON
+  const { nombre, correo, password } = req.body ?? {};
 
   if (!nombre || !correo || !password) {
     return res.status(400).json({ mensaje: 'Nombre, correo y contraseña son obligatorios' });
@@ -59,7 +60,7 @@ router.post('/registro', (req, res) => {
 
 // POST /api/auth/login  -> valida correo y contraseña y entrega un token
 router.post('/login', (req, res) => {
-  const { correo, password } = req.body;
+  const { correo, password } = req.body ?? {};
 
   if (!correo || !password) {
     return res.status(400).json({ mensaje: 'Correo y contraseña son obligatorios' });
