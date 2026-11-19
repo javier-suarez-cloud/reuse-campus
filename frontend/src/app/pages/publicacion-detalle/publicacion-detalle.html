@@ -22,7 +22,7 @@
       <p class="meta">Publicado por {{ p.propietario }} el {{ p.fecha_publicacion | date: 'dd/MM/yyyy HH:mm' }}</p>
       <p class="descripcion">{{ p.descripcion }}</p>
 
-      @if (esPropietario(p) && p.estado === 'DISPONIBLE') {
+      @if (puedeModificar(p)) {
         <div class="acciones">
           <a class="boton" [routerLink]="['/publicaciones', p.id, 'editar']">Editar</a>
           <button type="button" class="peligro" (click)="cancelar(p)">Cancelar publicación</button>

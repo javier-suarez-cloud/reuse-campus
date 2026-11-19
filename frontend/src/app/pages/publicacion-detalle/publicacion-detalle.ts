@@ -25,9 +25,11 @@ export class PublicacionDetalle implements OnInit {
     this.cargar();
   }
 
-  // ¿El usuario con sesión es el propietario?
-  esPropietario(p: Publicacion) {
-    return this.auth.usuario()?.id === p.usuario_id;
+  // Editar y cancelar: el propietario o un administrador, y solo si está DISPONIBLE.
+  // (El backend vuelve a validarlo; esto solo decide si se muestran los botones.)
+  puedeModificar(p: Publicacion) {
+    const esPropietario = this.auth.usuario()?.id === p.usuario_id;
+    return (esPropietario || this.auth.esAdmin()) && p.estado === 'DISPONIBLE';
   }
 
   cargar() {
