@@ -3,6 +3,8 @@ import { Inicio } from './pages/inicio/inicio';
 import { Login } from './pages/login/login';
 import { Registro } from './pages/registro/registro';
 import { Publicaciones } from './pages/publicaciones/publicaciones';
+import { PublicacionDetalle } from './pages/publicacion-detalle/publicacion-detalle';
+import { PublicacionForm } from './pages/publicacion-form/publicacion-form';
 import { authGuard, visitanteGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -10,5 +12,9 @@ export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [visitanteGuard] },
   { path: 'registro', component: Registro, canActivate: [visitanteGuard] },
   { path: 'publicaciones', component: Publicaciones, canActivate: [authGuard] },
+  // "nueva" va antes de ":id" para que no se confunda con un id
+  { path: 'publicaciones/nueva', component: PublicacionForm, canActivate: [authGuard] },
+  { path: 'publicaciones/:id', component: PublicacionDetalle, canActivate: [authGuard] },
+  { path: 'publicaciones/:id/editar', component: PublicacionForm, canActivate: [authGuard] },
   { path: '**', redirectTo: '' },
 ];

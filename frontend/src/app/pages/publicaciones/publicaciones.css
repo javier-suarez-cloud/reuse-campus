@@ -1,0 +1,21 @@
+.contenido { max-width: 960px; margin: 1.5rem auto; padding: 0 1rem; }
+.cabecera { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.boton {
+  padding: 0.55rem 1rem; background: #2e7d32; color: #fff;
+  border-radius: 6px; text-decoration: none;
+}
+.filtros { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; margin: 1rem 0; }
+.filtros label { display: flex; flex-direction: column; font-weight: 600; gap: 0.2rem; }
+.filtros select { padding: 0.45rem; border: 1px solid #b8c2cc; border-radius: 6px; }
+.filtros .check { flex-direction: row; align-items: center; gap: 0.4rem; }
+.lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.tarjeta-pub { background: #fff; border: 1px solid #dde3ea; border-radius: 10px; padding: 1rem; }
+.tarjeta-pub h2 { font-size: 1.1rem; margin: 0.5rem 0 0.2rem; }
+.meta { color: #52606d; font-size: 0.9rem; margin: 0 0 0.6rem; }
+.etiquetas { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.chip { background: #e8f1ea; color: #2e7d32; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.78rem; }
+.estado-RESERVADA { background: #fff4e0; color: #b26a00; }
+.estado-ENTREGADA { background: #e3eefb; color: #1a5fb4; }
+.estado-CANCELADA { background: #fdecea; color: #b71c1c; }
+.alerta { padding: 0.6rem 0.8rem; background: #fdecea; color: #b71c1c; border-radius: 6px; }
+.vacio { color: #52606d; }
