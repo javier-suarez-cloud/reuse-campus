@@ -1,0 +1,39 @@
+<section class="tarjeta">
+  <h1>{{ editando ? 'Editar publicación' : 'Nueva publicación' }}</h1>
+
+  @if (error()) {
+    <p class="alerta">{{ error() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+    <label for="titulo">Título</label>
+    <input id="titulo" type="text" formControlName="titulo" maxlength="150" />
+    @if (form.controls.titulo.touched && form.controls.titulo.invalid) {
+      <small class="error">El título es obligatorio (máximo 150 caracteres)</small>
+    }
+
+    <label for="descripcion">Descripción</label>
+    <textarea id="descripcion" rows="4" formControlName="descripcion"></textarea>
+    @if (form.controls.descripcion.touched && form.controls.descripcion.invalid) {
+      <small class="error">La descripción es obligatoria</small>
+    }
+
+    <label for="categoria">Categoría</label>
+    <input id="categoria" type="text" formControlName="categoria" maxlength="50" placeholder="Ej: Libros, Ropa, Electrónica" />
+    @if (form.controls.categoria.touched && form.controls.categoria.invalid) {
+      <small class="error">La categoría es obligatoria (máximo 50 caracteres)</small>
+    }
+
+    <label for="modalidad">Modalidad</label>
+    <select id="modalidad" formControlName="modalidad">
+      <option value="DONACION">Donación</option>
+      <option value="INTERCAMBIO">Intercambio</option>
+    </select>
+
+    <button type="submit" [disabled]="cargando()">
+      {{ cargando() ? 'Guardando...' : 'Guardar' }}
+    </button>
+  </form>
+
+  <p class="pie"><a routerLink="/publicaciones">Cancelar y volver</a></p>
+</section>

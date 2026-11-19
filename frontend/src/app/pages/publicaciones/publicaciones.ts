@@ -1,17 +1,53 @@
-import { Component, inject } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
+import {
+  EstadoPublicacion, Modalidad, Publicacion, PublicacionesService,
+} from '../../services/publicaciones.service';
 
-// Pantalla protegida de ejemplo; el CRUD real llega con el issue #4
 @Component({
   selector: 'app-publicaciones',
-  template: `
-    <section class="contenido">
-      <h1>Publicaciones</h1>
-      <p>Hola, {{ auth.usuario()?.nombre }}. Aquí se mostrará el listado de publicaciones.</p>
-    </section>
-  `,
-  styles: `.contenido { max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; }`,
+  imports: [FormsModule, RouterLink, DatePipe],
+  templateUrl: './publicaciones.html',
+  styleUrl: './publicaciones.css',
 })
-export class Publicaciones {
-  auth = inject(AuthService);
+export class Publicaciones implements OnInit {
+  private servicio = inject(PublicacionesService);
+
+  publicaciones = signal<Publicacion[]>([]);
+  cargando = signal(true);
+  error = signal('');
+
+  // Filtros (se ligan a los select con ngModel)
+  estado: EstadoPublicacion | '' = 'DISPONIBLE';
+  modalidad: Modalidad | '' = '';
+  soloPropias = false;
+
+  ngOnInit() {
+    this.cargar();
+  }
+
+  cargar() {
+    this.cargando.set(true);
+    this.error.set('');
+
+    this.servicio
+      .listar({ estado: this.estado, modalidad: this.modalidad, propias: this.soloPropias })
+      .subscribe({
+        next: (datos) => {
+          this.publicaciones.set(datos);
+          this.cargando.set(false);
+        },
+        error: (e: HttpErrorResponse) => {
+          this.cargando.set(false);
+          this.error.set(
+            e.status === 0
+              ? 'No se pudo conectar con el servidor. Revisa que el backend esté encendido.'
+              : (e.error?.mensaje ?? 'Error al cargar las publicaciones')
+          );
+        },
+      });
+  }
 }

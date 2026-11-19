@@ -1,0 +1,57 @@
+<section class="contenido">
+  <div class="cabecera">
+    <h1>Publicaciones</h1>
+    <a class="boton" routerLink="/publicaciones/nueva">Nueva publicación</a>
+  </div>
+
+  <div class="filtros">
+    <label>
+      Estado
+      <select [(ngModel)]="estado" (change)="cargar()">
+        <option value="">Todos (sin canceladas)</option>
+        <option value="DISPONIBLE">Disponible</option>
+        <option value="RESERVADA">Reservada</option>
+        <option value="ENTREGADA">Entregada</option>
+        <option value="CANCELADA">Cancelada</option>
+      </select>
+    </label>
+
+    <label>
+      Modalidad
+      <select [(ngModel)]="modalidad" (change)="cargar()">
+        <option value="">Todas</option>
+        <option value="DONACION">Donación</option>
+        <option value="INTERCAMBIO">Intercambio</option>
+      </select>
+    </label>
+
+    <label class="check">
+      <input type="checkbox" [(ngModel)]="soloPropias" (change)="cargar()" />
+      Solo mis publicaciones
+    </label>
+  </div>
+
+  @if (error()) {
+    <p class="alerta">{{ error() }}</p>
+  }
+
+  @if (cargando()) {
+    <p>Cargando publicaciones...</p>
+  } @else if (publicaciones().length === 0 && !error()) {
+    <p class="vacio">No hay publicaciones con esos filtros.</p>
+  } @else {
+    <div class="lista">
+      @for (p of publicaciones(); track p.id) {
+        <article class="tarjeta-pub">
+          <div class="etiquetas">
+            <span class="chip">{{ p.modalidad === 'DONACION' ? 'Donación' : 'Intercambio' }}</span>
+            <span class="chip estado-{{ p.estado }}">{{ p.estado }}</span>
+          </div>
+          <h2>{{ p.titulo }}</h2>
+          <p class="meta">{{ p.categoria }} · por {{ p.propietario }} · {{ p.fecha_publicacion | date: 'dd/MM/yyyy' }}</p>
+          <a [routerLink]="['/publicaciones', p.id]">Ver detalle</a>
+        </article>
+      }
+    </div>
+  }
+</section>
