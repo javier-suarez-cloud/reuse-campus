@@ -14,32 +14,47 @@ const SELECT_BASE = `
   FROM publicaciones p
   JOIN usuarios u ON u.id = p.usuario_id`;
 
+const MODALIDADES = ['DONACION', 'INTERCAMBIO'];
+const ESTADOS = ['DISPONIBLE', 'RESERVADA', 'ENTREGADA', 'CANCELADA'];
+
 // Convierte el :id de la URL en un número entero positivo (o null si no sirve)
 function leerId(valor) {
   const id = Number(valor);
   return Number.isInteger(id) && id > 0 ? id : null;
 }
 
-// GET /api/publicaciones  -> listado (filtros opcionales: ?estado=&modalidad=&categoria=)
+// GET /api/publicaciones  -> listado
+// Filtros opcionales: ?estado=&modalidad=&categoria=&propias=1
 // Si no se pide un estado, no se muestran las CANCELADAS.
 router.get('/', (req, res) => {
-  const { estado, modalidad, categoria } = req.query;
+  const { estado, modalidad, categoria, propias } = req.query;
   const condiciones = [];
   const valores = [];
 
   if (estado) {
+    if (!ESTADOS.includes(estado)) {
+      return res.status(400).json({ mensaje: 'El estado indicado no es válido' });
+    }
     condiciones.push('p.estado = ?');
     valores.push(estado);
   } else {
     condiciones.push("p.estado <> 'CANCELADA'");
   }
   if (modalidad) {
+    if (!MODALIDADES.includes(modalidad)) {
+      return res.status(400).json({ mensaje: 'La modalidad indicada no es válida' });
+    }
     condiciones.push('p.modalidad = ?');
     valores.push(modalidad);
   }
   if (categoria) {
     condiciones.push('p.categoria = ?');
     valores.push(categoria);
+  }
+  // ?propias=1 deja solo las publicaciones del usuario que inició sesión
+  if (propias === '1') {
+    condiciones.push('p.usuario_id = ?');
+    valores.push(req.usuario.id);
   }
 
   const sql = `${SELECT_BASE} WHERE ${condiciones.join(' AND ')} ORDER BY p.id DESC`;
@@ -88,8 +103,6 @@ router.get('/:id', (req, res) => {
     res.status(200).json(resultados[0]);
   });
 });
-
-const MODALIDADES = ['DONACION', 'INTERCAMBIO'];
 
 // Revisa y limpia los datos del cuerpo (sirve para crear y para editar).
 // Devuelve { datos } si está todo bien, o { error } con el mensaje para el usuario.
