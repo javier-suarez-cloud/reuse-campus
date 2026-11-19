@@ -1,0 +1,21 @@
+<nav class="barra">
+  <a class="marca" routerLink="/">ReUse Campus</a>
+
+  <div class="enlaces">
+    @if (auth.haySesion()) {
+      <a routerLink="/publicaciones" routerLinkActive="activo">Publicaciones</a>
+      @if (auth.esAdmin()) {
+        <span class="etiqueta">Admin</span>
+      }
+      <span class="usuario">{{ auth.usuario()?.nombre }}</span>
+      <button type="button" (click)="auth.logout()">Cerrar sesión</button>
+    } @else {
+      <a routerLink="/login" routerLinkActive="activo">Iniciar sesión</a>
+      <a routerLink="/registro" routerLinkActive="activo">Registrarse</a>
+    }
+  </div>
+</nav>
+
+<main>
+  <router-outlet />
+</main>

@@ -1,0 +1,19 @@
+.barra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  background: #2e7d32;
+  color: #fff;
+}
+.barra a { color: #fff; text-decoration: none; }
+.marca { font-weight: 700; font-size: 1.2rem; }
+.enlaces { display: flex; align-items: center; gap: 1rem; }
+.activo { text-decoration: underline !important; }
+.etiqueta { background: #fff; color: #2e7d32; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.8rem; }
+.barra button {
+  background: transparent; color: #fff; border: 1px solid #fff;
+  padding: 0.3rem 0.7rem; border-radius: 6px; cursor: pointer;
+}
