@@ -44,8 +44,9 @@ export class PublicacionForm implements OnInit {
 
     this.servicio.obtener(this.id).subscribe({
       next: (p) => {
-        // Solo el propietario puede editar y solo si sigue DISPONIBLE
-        if (p.usuario_id !== this.auth.usuario()?.id || p.estado !== 'DISPONIBLE') {
+        // Edita el propietario o un administrador, y solo si sigue DISPONIBLE
+        const puedeEditar = p.usuario_id === this.auth.usuario()?.id || this.auth.esAdmin();
+        if (!puedeEditar || p.estado !== 'DISPONIBLE') {
           this.router.navigate(['/publicaciones', p.id]);
           return;
         }
