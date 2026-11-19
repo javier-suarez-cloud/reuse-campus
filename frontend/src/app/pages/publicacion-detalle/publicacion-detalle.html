@@ -1,0 +1,33 @@
+<section class="contenido">
+  <a routerLink="/publicaciones">&larr; Volver al listado</a>
+
+  @if (error()) {
+    <p class="alerta">{{ error() }}</p>
+  }
+  @if (exito()) {
+    <p class="ok">{{ exito() }}</p>
+  }
+
+  @if (cargando()) {
+    <p>Cargando...</p>
+  } @else if (publicacion(); as p) {
+    <article class="detalle">
+      <div class="etiquetas">
+        <span class="chip">{{ p.modalidad === 'DONACION' ? 'Donación' : 'Intercambio' }}</span>
+        <span class="chip estado-{{ p.estado }}">{{ p.estado }}</span>
+        <span class="chip">{{ p.categoria }}</span>
+      </div>
+
+      <h1>{{ p.titulo }}</h1>
+      <p class="meta">Publicado por {{ p.propietario }} el {{ p.fecha_publicacion | date: 'dd/MM/yyyy HH:mm' }}</p>
+      <p class="descripcion">{{ p.descripcion }}</p>
+
+      @if (esPropietario(p) && p.estado === 'DISPONIBLE') {
+        <div class="acciones">
+          <a class="boton" [routerLink]="['/publicaciones', p.id, 'editar']">Editar</a>
+          <button type="button" class="peligro" (click)="cancelar(p)">Cancelar publicación</button>
+        </div>
+      }
+    </article>
+  }
+</section>
