@@ -1,0 +1,68 @@
+<section class="contenido">
+  <h1>Solicitudes recibidas</h1>
+
+  <div class="filtros">
+    <label>
+      Estado
+      <select [(ngModel)]="estado" (change)="cargar()">
+        <option value="">Todas</option>
+        <option value="PENDIENTE">Pendientes</option>
+        <option value="ACEPTADA">Aceptadas</option>
+        <option value="RECHAZADA">Rechazadas</option>
+        <option value="CANCELADA">Canceladas</option>
+      </select>
+    </label>
+
+    @if (publicacionId) {
+      <p class="filtro-activo">
+        Solo la publicación n.º {{ publicacionId }}
+        <button type="button" class="enlace" (click)="quitarFiltroPublicacion()">Ver todas</button>
+      </p>
+    }
+  </div>
+
+  @if (error()) {
+    <p class="alerta">{{ error() }}</p>
+  }
+  @if (exito()) {
+    <p class="ok">{{ exito() }}</p>
+  }
+
+  @if (cargando()) {
+    <p>Cargando solicitudes...</p>
+  } @else if (solicitudes().length === 0 && !error()) {
+    <p class="vacio">No hay solicitudes con esos filtros.</p>
+  } @else {
+    <div class="lista">
+      @for (s of solicitudes(); track s.id) {
+        <article class="item">
+          <div class="etiquetas">
+            <span class="chip estado-{{ s.estado }}">{{ s.estado }}</span>
+          </div>
+          <h2>
+            <a [routerLink]="['/publicaciones', s.publicacion_id]">{{ s.publicacion_titulo }}</a>
+          </h2>
+          <p class="meta">
+            De {{ s.solicitante }} · {{ s.fecha_solicitud | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+          @if (s.mensaje) {
+            <p class="mensaje">“{{ s.mensaje }}”</p>
+          }
+
+          @if (s.estado === 'PENDIENTE') {
+            <div class="acciones">
+              @if (puedeAceptar(s)) {
+                <button type="button" [disabled]="trabajando()" (click)="aceptar(s)">Aceptar</button>
+              } @else {
+                <small class="aviso">La publicación ya está {{ s.publicacion_estado }}: no se puede aceptar.</small>
+              }
+              <button type="button" class="peligro" [disabled]="trabajando()" (click)="rechazar(s)">
+                Rechazar
+              </button>
+            </div>
+          }
+        </article>
+      }
+    </div>
+  }
+</section>
