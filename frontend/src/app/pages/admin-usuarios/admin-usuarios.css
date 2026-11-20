@@ -1,0 +1,25 @@
+.contenido { max-width: 1000px; margin: 1.5rem auto; padding: 0 1rem; }
+.filtros { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
+.filtros label { display: flex; flex-direction: column; font-weight: 600; gap: 0.2rem; }
+.filtros select { padding: 0.45rem; border: 1px solid #b8c2cc; border-radius: 6px; }
+.tabla-contenedor { overflow-x: auto; background: #fff; border: 1px solid #dde3ea; border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 0.65rem 0.8rem; border-bottom: 1px solid #eef1f4; vertical-align: middle; }
+th { background: #f4f7f9; font-size: 0.85rem; }
+tr:last-child td { border-bottom: 0; }
+.num { text-align: center; }
+.chip { background: #e8f1ea; color: #2e7d32; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.78rem; }
+.rol-ADMINISTRADOR { background: #e3eefb; color: #1a5fb4; }
+.estado-INACTIVO { background: #fdecea; color: #b71c1c; }
+.acciones { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.aviso { color: #52606d; }
+button {
+  padding: 0.4rem 0.8rem; background: #2e7d32; color: #fff; border: 0;
+  border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+}
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+.peligro { background: #c62828; }
+.secundario { background: #1a5fb4; }
+.alerta { padding: 0.6rem 0.8rem; background: #fdecea; color: #b71c1c; border-radius: 6px; }
+.ok { padding: 0.6rem 0.8rem; background: #e8f5e9; color: #1b5e20; border-radius: 6px; }
+.vacio { color: #52606d; }

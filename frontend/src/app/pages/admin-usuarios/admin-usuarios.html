@@ -1,0 +1,77 @@
+<section class="contenido">
+  <h1>Administración de usuarios</h1>
+
+  <div class="filtros">
+    <label>
+      Rol
+      <select [(ngModel)]="rol" (change)="cargar()">
+        <option value="">Todos</option>
+        <option value="USUARIO">Usuario</option>
+        <option value="ADMINISTRADOR">Administrador</option>
+      </select>
+    </label>
+
+    <label>
+      Estado
+      <select [(ngModel)]="estado" (change)="cargar()">
+        <option value="">Todos</option>
+        <option value="ACTIVO">Activo</option>
+        <option value="INACTIVO">Inactivo</option>
+      </select>
+    </label>
+  </div>
+
+  @if (error()) {
+    <p class="alerta">{{ error() }}</p>
+  }
+  @if (exito()) {
+    <p class="ok">{{ exito() }}</p>
+  }
+
+  @if (cargando()) {
+    <p>Cargando usuarios...</p>
+  } @else if (usuarios().length === 0 && !error()) {
+    <p class="vacio">No hay usuarios con esos filtros.</p>
+  } @else {
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Publicaciones</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of usuarios(); track u.id) {
+            <tr>
+              <td>{{ u.nombre }}</td>
+              <td>{{ u.correo }}</td>
+              <td><span class="chip rol-{{ u.rol }}">{{ u.rol }}</span></td>
+              <td><span class="chip estado-{{ u.estado }}">{{ u.estado }}</span></td>
+              <td class="num">{{ u.publicaciones }}</td>
+              <td>
+                @if (esMiCuenta(u)) {
+                  <small class="aviso">Tu cuenta</small>
+                } @else {
+                  <div class="acciones">
+                    <button type="button" [disabled]="trabajando()" (click)="alternarEstado(u)"
+                            [class.peligro]="u.estado === 'ACTIVO'">
+                      {{ u.estado === 'ACTIVO' ? 'Desactivar' : 'Activar' }}
+                    </button>
+                    <button type="button" class="secundario" [disabled]="trabajando()" (click)="alternarRol(u)">
+                      {{ u.rol === 'ADMINISTRADOR' ? 'Quitar administrador' : 'Hacer administrador' }}
+                    </button>
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

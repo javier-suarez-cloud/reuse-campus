@@ -8,6 +8,7 @@
       <a routerLink="/solicitudes/recibidas" routerLinkActive="activo">Recibidas</a>
       <a routerLink="/entregas" routerLinkActive="activo">Entregas</a>
       @if (auth.esAdmin()) {
+        <a routerLink="/admin/usuarios" routerLinkActive="activo">Usuarios</a>
         <span class="etiqueta">Admin</span>
       }
       <span class="usuario">{{ auth.usuario()?.nombre }}</span>
