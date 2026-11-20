@@ -84,7 +84,7 @@ async function cargar() {
     await nuevaSolicitud(herramientas, carla, 'Ya no me hace falta, cancelo.', 'CANCELADA');
   });
 
-  console.log('Datos de ejemplo cargados: 5 usuarios, 6 publicaciones, 7 solicitudes y 2 entregas.');
+  console.log('Datos de ejemplo cargados: 5 usuarios, 6 publicaciones, 6 solicitudes y 2 entregas.');
   console.log(`Administrador: admin@reuse.cl / ${CLAVE_ADMIN}`);
   console.log(`Usuarios:      ana@reuse.cl, beto@reuse.cl, carla@reuse.cl / ${CLAVE_USUARIOS}`);
   console.log(`Cuenta inactiva (para probar el bloqueo): diego@reuse.cl / ${CLAVE_USUARIOS}`);
