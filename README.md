@@ -340,21 +340,23 @@ Se ejecutan con `cd backend && npm test`. El ejecutor crea una base de prueba (`
 
 ### Pruebas manuales en el navegador
 
-Pruebas pedidas por el enunciado. **Pendiente de completar por Fabián** (y Javier): recorrer cada caso en la aplicación y anotar el resultado real.
+Pruebas pedidas por el enunciado. Se hicieron el 20-nov con el backend y el frontend encendidos y los datos de `npm run seed`. **Las ejecutó Claude, a pedido de Fabián, controlando el navegador integrado** (Fabián no las hizo con sus propias manos). Cuando una prueba dice "API forzada", se llamó a la API directamente con el token de ese usuario para comprobar que el backend también la rechaza. Las comprobaciones de estado se revisaron además en MySQL.
+
+**Límite de estas pruebas:** el navegador integrado no puede mostrar ni responder los diálogos nativos `confirm()`. Por eso, en las pruebas que piden confirmación (aceptar, rechazar, confirmar entrega, administración de usuarios), la respuesta del diálogo se **simuló** y se comprobó que se invoca con el texto correcto. El único diálogo que se probó **real** es el de cancelar una solicitud (ver su fila), con un Chrome controlado por código; los demás usan el mismo `confirm()` del navegador pero no se repitió la prueba real en cada uno.
 
 | Prueba | Resultado esperado | Resultado |
 |---|---|---|
-| Login con datos correctos y con contraseña incorrecta | Entra a la aplicación / mensaje "Correo o contraseña incorrectos" | Pendiente |
-| Usuario normal intenta entrar a la administración de usuarios | No ve la opción; si fuerza la API, 403 | Pendiente |
-| Solicitar la publicación propia | No aparece el botón; si fuerza la API, 403 | Pendiente |
-| Solicitar dos veces la misma publicación | Mensaje de error del backend (409) | Pendiente |
-| Solicitar una publicación `RESERVADA`, `ENTREGADA` o `CANCELADA` | No se puede solicitar | Pendiente |
-| Aceptar una solicitud | La otra pasa a `RECHAZADA`, la publicación a `RESERVADA` y se crea la entrega | Pendiente |
-| Confirmar la entrega | Entrega `COMPLETADA` y publicación `ENTREGADA` | Pendiente |
-| Cancelar una solicitud `PENDIENTE` (con el diálogo de confirmación) | Pasa a `CANCELADA` | Pendiente |
-| Formulario con datos incompletos o inválidos | Mensajes de validación | Pendiente |
-| Persistencia: reiniciar el backend y recargar la pantalla | Los datos siguen | Pendiente |
-| Error de comunicación: apagar el backend y abrir una pantalla | Aviso de que no se pudo conectar con el servidor | Pendiente |
+| Login con datos correctos y con contraseña incorrecta | Entra a la aplicación / mensaje "Correo o contraseña incorrectos" | ✅ Con contraseña incorrecta (`admin@reuse.cl`): aparece "Correo o contraseña incorrectos" y no se guarda la sesión. Con la correcta: entra a `/publicaciones` y el menú muestra el nombre y el enlace "Usuarios" |
+| Usuario normal intenta entrar a la administración de usuarios | No ve la opción; si fuerza la API, 403 | ✅ Con `ana@reuse.cl` (USUARIO): el menú no muestra "Usuarios"; entrar a `/admin/usuarios` lo redirige a `/publicaciones`; API forzada `GET /api/usuarios`: 403 "No tienes permiso para esta operación". *(Esta pantalla está en el PR #24; la prueba se hizo con esa rama)* |
+| Solicitar la publicación propia | No aparece el botón; si fuerza la API, 403 | ✅ `ana@reuse.cl` en su publicación n.º 5: no aparece el formulario "Solicitar" (ve Editar y Cancelar). API forzada `POST /api/solicitudes`: 403 "No puedes solicitar tu propia publicación" |
+| Solicitar dos veces la misma publicación | Mensaje de error del backend (409) | ✅ `beto@reuse.cl` ya tenía una solicitud pendiente sobre la publicación n.º 5; al pulsar "Solicitar" de nuevo aparece "Ya tienes una solicitud pendiente sobre esta publicación". Nota: la pantalla igual muestra el formulario (no sabe que ya hay una pendiente); quien la rechaza es el backend |
+| Solicitar una publicación `RESERVADA`, `ENTREGADA` o `CANCELADA` | No se puede solicitar | ✅ Vistas por un usuario que no es el propietario, las tres publicaciones (n.º 6 `RESERVADA`, n.º 7 `ENTREGADA`, n.º 9 `CANCELADA`) no muestran el formulario "Solicitar". API forzada: 409 "Solo se pueden solicitar publicaciones DISPONIBLES (esta está RESERVADA / ENTREGADA / CANCELADA)" en cada caso |
+| Aceptar una solicitud | La otra pasa a `RECHAZADA`, la publicación a `RESERVADA` y se crea la entrega | ✅ `ana@reuse.cl` aceptó la solicitud de Beto sobre la publicación n.º 5 (Carla también estaba pendiente): Carla quedó `RECHAZADA`, la publicación `RESERVADA` y se creó la entrega `PENDIENTE` (verificado en MySQL). Diálogo de confirmación simulado |
+| Confirmar la entrega | Entrega `COMPLETADA` y publicación `ENTREGADA` | ✅ `beto@reuse.cl` (receptor) confirmó la entrega: quedó `COMPLETADA` con fecha de entrega y la publicación `ENTREGADA` (verificado en MySQL). Diálogo de confirmación simulado |
+| Cancelar una solicitud `PENDIENTE` (con el diálogo de confirmación) | Pasa a `CANCELADA` | ✅ Probado con el **diálogo nativo real** en un Chrome controlado por código (no a mano). `carla@reuse.cl` tenía una solicitud `PENDIENTE` sobre la publicación n.º 10 y pulsó "Cancelar solicitud": apareció un `confirm` con el texto "¿Seguro que quieres cancelar esta solicitud?". Al pulsar **Cancelar** en el diálogo, la solicitud siguió `PENDIENTE` y no apareció ningún mensaje. Al repetirlo y pulsar **Aceptar**, pasó a `CANCELADA` y apareció "Solicitud cancelada correctamente". *Pendiente solo si el profesor pide verlo con las manos de un integrante en un navegador normal* |
+| Formulario con datos incompletos o inválidos | Mensajes de validación | ✅ "Nueva publicación" vacía: 3 mensajes (título, descripción y categoría obligatorios) y no se envía. Registro con correo inválido, contraseña de 3 caracteres y confirmación distinta: 4 mensajes (nombre obligatorio, formato de correo, mínimo 6 caracteres y "Las contraseñas no coinciden") y no se envía |
+| Persistencia: reiniciar el backend y recargar la pantalla | Los datos siguen | ✅ Se anotó el listado de 7 publicaciones con sus estados, se apagó y volvió a encender el backend y se recargó la pantalla: el listado quedó idéntico y la sesión siguió válida |
+| Error de comunicación: apagar el backend y abrir una pantalla | Aviso de que no se pudo conectar con el servidor | ✅ Con el backend apagado, "Mis solicitudes" y el login muestran "No se pudo conectar con el servidor. Revisa que el backend esté encendido." |
 
 ## 15. Problemas encontrados y cómo se resolvieron
 
