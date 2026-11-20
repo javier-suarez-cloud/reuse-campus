@@ -1,0 +1,40 @@
+<section class="contenido">
+  <h1>Mis solicitudes</h1>
+
+  @if (error()) {
+    <p class="alerta">{{ error() }}</p>
+  }
+  @if (exito()) {
+    <p class="ok">{{ exito() }}</p>
+  }
+
+  @if (cargando()) {
+    <p>Cargando tus solicitudes...</p>
+  } @else if (solicitudes().length === 0 && !error()) {
+    <p class="vacio">
+      Aún no has hecho solicitudes. Busca algo en <a routerLink="/publicaciones">Publicaciones</a>.
+    </p>
+  } @else {
+    <div class="lista">
+      @for (s of solicitudes(); track s.id) {
+        <article class="item">
+          <div class="etiquetas">
+            <span class="chip estado-{{ s.estado }}">{{ s.estado }}</span>
+          </div>
+          <h2>
+            <a [routerLink]="['/publicaciones', s.publicacion_id]">{{ s.publicacion_titulo }}</a>
+          </h2>
+          <p class="meta">
+            Publicación de {{ s.propietario }} · enviada el {{ s.fecha_solicitud | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+          @if (s.mensaje) {
+            <p class="mensaje">“{{ s.mensaje }}”</p>
+          }
+          @if (s.estado === 'PENDIENTE') {
+            <button type="button" class="peligro" (click)="cancelar(s)">Cancelar solicitud</button>
+          }
+        </article>
+      }
+    </div>
+  }
+</section>
