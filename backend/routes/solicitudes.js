@@ -192,4 +192,119 @@ router.patch('/:id/cancelar', async (req, res) => {
   }
 });
 
+// Busca la solicitud y su publicación y las BLOQUEA (FOR UPDATE) hasta que termine la transacción.
+// Se bloquea siempre en el mismo orden (primero la publicación y luego la solicitud) para que dos
+// peticiones simultáneas no se queden esperando una a la otra.
+async function bloquearSolicitudYPublicacion(conexion, id) {
+  const [existentes] = await conexion.query('SELECT publicacion_id FROM solicitudes WHERE id = ?', [id]);
+
+  if (existentes.length === 0) {
+    throw new ErrorNegocio(404, 'Solicitud no encontrada');
+  }
+
+  const [publicaciones] = await conexion.query(
+    'SELECT * FROM publicaciones WHERE id = ? FOR UPDATE',
+    [existentes[0].publicacion_id]
+  );
+  // Se vuelve a leer la solicitud ya bloqueada: así se ve su estado más reciente
+  const [solicitudes] = await conexion.query('SELECT * FROM solicitudes WHERE id = ? FOR UPDATE', [id]);
+
+  return { publicacion: publicaciones[0], solicitud: solicitudes[0] };
+}
+
+// PATCH /api/solicitudes/:id/aceptar  -> el propietario acepta una solicitud
+// Reglas: RN07, RN08, RN09, RN10 y RN11. Todo ocurre en UNA transacción:
+// si cualquier paso falla, no se guarda ninguno de los cambios.
+router.patch('/:id/aceptar', async (req, res) => {
+  const id = leerId(req.params.id);
+
+  if (!id) {
+    return res.status(400).json({ mensaje: 'ID inválido' });
+  }
+
+  try {
+    const entregaId = await enTransaccion(async (conexion) => {
+      const { publicacion, solicitud } = await bloquearSolicitudYPublicacion(conexion, id);
+
+      // RN07: solo el propietario de la publicación acepta (ni el solicitante ni un administrador)
+      if (publicacion.usuario_id !== req.usuario.id) {
+        throw new ErrorNegocio(403, 'Solo el propietario de la publicación puede aceptar solicitudes');
+      }
+
+      if (solicitud.estado !== 'PENDIENTE') {
+        throw new ErrorNegocio(
+          409,
+          `Solo se puede aceptar una solicitud PENDIENTE (esta está ${solicitud.estado})`
+        );
+      }
+
+      // RN08 y RN12: la publicación debe estar DISPONIBLE. Si ya hay una solicitud aceptada,
+      // la publicación está RESERVADA y no se puede aceptar otra (solo una ACEPTADA por publicación).
+      if (publicacion.estado !== 'DISPONIBLE') {
+        throw new ErrorNegocio(
+          409,
+          `Solo se pueden aceptar solicitudes de una publicación DISPONIBLE (esta está ${publicacion.estado})`
+        );
+      }
+
+      // La solicitud elegida pasa a ACEPTADA
+      await conexion.query("UPDATE solicitudes SET estado = 'ACEPTADA' WHERE id = ?", [solicitud.id]);
+
+      // RN09: la publicación pasa de DISPONIBLE a RESERVADA
+      await conexion.query("UPDATE publicaciones SET estado = 'RESERVADA' WHERE id = ?", [publicacion.id]);
+
+      // RN10: las demás solicitudes PENDIENTES de esa publicación pasan a RECHAZADA
+      await conexion.query(
+        "UPDATE solicitudes SET estado = 'RECHAZADA' WHERE publicacion_id = ? AND id <> ? AND estado = 'PENDIENTE'",
+        [publicacion.id, solicitud.id]
+      );
+
+      // RN11: se genera la Entrega/Intercambio en estado PENDIENTE (el estado lo pone el DEFAULT)
+      const [entrega] = await conexion.query(
+        'INSERT INTO entregas (publicacion_id, solicitud_id, propietario_id, receptor_id) VALUES (?, ?, ?, ?)',
+        [publicacion.id, solicitud.id, publicacion.usuario_id, solicitud.solicitante_id]
+      );
+
+      return entrega.insertId;
+    });
+
+    res.status(200).json({ mensaje: 'Solicitud aceptada correctamente', entrega_id: entregaId });
+  } catch (error) {
+    responderError(res, error, 'Error al aceptar la solicitud');
+  }
+});
+
+// PATCH /api/solicitudes/:id/rechazar  -> el propietario rechaza una solicitud (RN07)
+router.patch('/:id/rechazar', async (req, res) => {
+  const id = leerId(req.params.id);
+
+  if (!id) {
+    return res.status(400).json({ mensaje: 'ID inválido' });
+  }
+
+  try {
+    await enTransaccion(async (conexion) => {
+      const { publicacion, solicitud } = await bloquearSolicitudYPublicacion(conexion, id);
+
+      // RN07: solo el propietario de la publicación rechaza
+      if (publicacion.usuario_id !== req.usuario.id) {
+        throw new ErrorNegocio(403, 'Solo el propietario de la publicación puede rechazar solicitudes');
+      }
+
+      if (solicitud.estado !== 'PENDIENTE') {
+        throw new ErrorNegocio(
+          409,
+          `Solo se puede rechazar una solicitud PENDIENTE (esta está ${solicitud.estado})`
+        );
+      }
+
+      await conexion.query("UPDATE solicitudes SET estado = 'RECHAZADA' WHERE id = ?", [solicitud.id]);
+    });
+
+    res.status(200).json({ mensaje: 'Solicitud rechazada correctamente' });
+  } catch (error) {
+    responderError(res, error, 'Error al rechazar la solicitud');
+  }
+});
+
 module.exports = router;
