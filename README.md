@@ -20,6 +20,19 @@ El detalle de cada punto pedido por la evaluación está a continuación.
 
 ---
 
+## Funcionalidades implementadas
+
+| Área | Qué se puede hacer |
+|---|---|
+| Cuentas y sesión | Registrarse (contraseña encriptada con hash), iniciar y cerrar sesión con token JWT, mantener la sesión al recargar la página. Una cuenta desactivada pierde el acceso de inmediato |
+| Publicaciones | Crear, ver el listado con filtros (estado, modalidad y categoría), ver el detalle y mis publicaciones, editar y cancelar (solo si están `DISPONIBLES`) |
+| Solicitudes | Solicitar una publicación con un mensaje opcional, ver mis solicitudes y cancelarlas mientras estén `PENDIENTES`, ver las solicitudes recibidas en mis publicaciones, aceptar o rechazar |
+| Entregas | Se genera una entrega `PENDIENTE` al aceptar una solicitud; se ven mis entregas (como propietario o receptor) y se confirman, con lo que la publicación pasa a `ENTREGADA` |
+| Administración | Ver la lista de usuarios con filtros, activar o desactivar cuentas, cambiar roles y moderar (editar o cancelar) publicaciones de otras personas |
+| Reglas y datos | Las 18 reglas de negocio (RN01 a RN18) se validan en el backend; aceptar y confirmar se hacen en transacciones; los estados reemplazan al borrado, así que el historial se conserva |
+| Errores y validaciones | Validaciones en los formularios de Angular y en el backend; los errores llegan como `{ mensaje }` (400, 401, 403, 404, 409) y se muestran al usuario; aviso cuando no hay conexión con la API |
+| Apoyo | Datos de ejemplo (`npm run seed`) y 228 pruebas automáticas (`npm test`) |
+
 ## 1. Problema que resuelve
 
 Los artículos en buen estado que una persona ya no usa suelen terminar guardados o regalados sin ningún control. Quien los necesita no se entera, y cuando varias personas piden lo mismo no hay forma ordenada de decidir ni de dejar registro de lo que pasó.
