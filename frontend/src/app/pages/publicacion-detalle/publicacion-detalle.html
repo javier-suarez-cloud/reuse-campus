@@ -39,6 +39,14 @@
         </div>
       }
 
+      @if (auth.usuario()?.id === p.usuario_id) {
+        <p class="solicitudes-link">
+          <a [routerLink]="['/solicitudes/recibidas']" [queryParams]="{ publicacion_id: p.id }">
+            Ver las solicitudes de esta publicación
+          </a>
+        </p>
+      }
+
       @if (puedeModificar(p)) {
         <div class="acciones">
           <a class="boton" [routerLink]="['/publicaciones', p.id, 'editar']">Editar</a>
