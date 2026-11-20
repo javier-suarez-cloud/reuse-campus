@@ -5,6 +5,7 @@ import { Registro } from './pages/registro/registro';
 import { Publicaciones } from './pages/publicaciones/publicaciones';
 import { PublicacionDetalle } from './pages/publicacion-detalle/publicacion-detalle';
 import { PublicacionForm } from './pages/publicacion-form/publicacion-form';
+import { MisSolicitudes } from './pages/mis-solicitudes/mis-solicitudes';
 import { authGuard, visitanteGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'publicaciones/nueva', component: PublicacionForm, canActivate: [authGuard] },
   { path: 'publicaciones/:id', component: PublicacionDetalle, canActivate: [authGuard] },
   { path: 'publicaciones/:id/editar', component: PublicacionForm, canActivate: [authGuard] },
+  { path: 'solicitudes/mias', component: MisSolicitudes, canActivate: [authGuard] },
   { path: '**', redirectTo: '' },
 ];

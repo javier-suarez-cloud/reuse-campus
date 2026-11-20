@@ -14,5 +14,12 @@
   border-radius: 6px; text-decoration: none; cursor: pointer; font-size: 1rem;
 }
 .peligro { background: #c62828; }
+.solicitud { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1rem; align-items: flex-start; }
+.solicitud label { font-weight: 600; }
+.solicitud textarea {
+  width: 100%; box-sizing: border-box; padding: 0.55rem 0.7rem; font: inherit;
+  border: 1px solid #b8c2cc; border-radius: 6px;
+}
+.error-campo { color: #c62828; }
 .alerta { padding: 0.6rem 0.8rem; background: #fdecea; color: #b71c1c; border-radius: 6px; }
 .ok { padding: 0.6rem 0.8rem; background: #e8f5e9; color: #1b5e20; border-radius: 6px; }

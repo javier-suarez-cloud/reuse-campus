@@ -22,6 +22,23 @@
       <p class="meta">Publicado por {{ p.propietario }} el {{ p.fecha_publicacion | date: 'dd/MM/yyyy HH:mm' }}</p>
       <p class="descripcion">{{ p.descripcion }}</p>
 
+      @if (puedeSolicitar(p)) {
+        <div class="solicitud">
+          @if (solicitudEnviada()) {
+            <p>Tu solicitud quedó pendiente. <a routerLink="/solicitudes/mias">Ver mis solicitudes</a></p>
+          } @else {
+            <label for="mensajeSolicitud">Mensaje para el propietario (opcional)</label>
+            <textarea id="mensajeSolicitud" rows="3" maxlength="255" [formControl]="mensajeSolicitud"></textarea>
+            @if (mensajeSolicitud.touched && mensajeSolicitud.invalid) {
+              <small class="error-campo">El mensaje no puede superar los 255 caracteres</small>
+            }
+            <button type="button" [disabled]="enviando()" (click)="solicitar(p)">
+              {{ enviando() ? 'Enviando...' : 'Solicitar' }}
+            </button>
+          }
+        </div>
+      }
+
       @if (puedeModificar(p)) {
         <div class="acciones">
           <a class="boton" [routerLink]="['/publicaciones', p.id, 'editar']">Editar</a>
