@@ -277,7 +277,7 @@ Todas las rutas, salvo registro, login y la raíz, exigen sesión (`Authorizatio
 | `/solicitudes/mias` | Mis solicitudes y cancelar | Con sesión |
 | `/solicitudes/recibidas` | Solicitudes de mis publicaciones, aceptar y rechazar | Con sesión |
 | `/entregas` | Mis entregas y confirmar | Con sesión |
-| Administración de usuarios | **Pendiente (a cargo de Fabián)**: lista, activar o desactivar cuentas y cambiar roles, usando `/api/usuarios` | Administrador |
+| `/admin/usuarios` | Administración de usuarios: lista con filtros por rol y estado, activar o desactivar cuentas y cambiar roles (con confirmación), usando `/api/usuarios` | Solo administrador (`adminGuard`); en la fila de su propia cuenta no aparecen los botones |
 
 La barra de navegación cambia según la sesión y muestra la etiqueta "Admin" para los administradores. Los errores del backend se muestran con su `{ mensaje }`, y si no hay conexión aparece un aviso para revisar que el backend esté encendido.
 
@@ -294,9 +294,9 @@ Tablero: [ReUse Campus Kanban](https://github.com/users/javier-suarez-cloud/proj
 | #5 | Solicitudes: crear y cancelar | Javier (back) y Fabián (front) | #15 y #18 |
 | #6 | Aceptar y rechazar con transacción | Javier (back) y Fabián (front) | #16 y #19 |
 | #7 | Confirmar entrega y cierre de la publicación | Javier (back) y Fabián (front) | #17 y #20 |
-| #8 | Roles, errores y validaciones | Javier (back) y Fabián (front) | #21 (back); front pendiente |
-| #9 | Pruebas de reglas y situaciones inválidas documentadas | Javier (automáticas) y Fabián (manuales) | #22 (automáticas); manuales pendientes |
-| #10 | README, bitácora y declaración de uso de IA | Ambos | Este documento |
+| #8 | Roles, errores y validaciones | Javier (back) y Fabián (front) | #21 (back) y #24 (front) |
+| #9 | Pruebas de reglas y situaciones inválidas documentadas | Javier (automáticas) y Fabián (manuales) | #22 (automáticas) y #25 (manuales) |
+| #10 | README, bitácora y declaración de uso de IA | Ambos | #23 y este documento (falta completar las filas de revisión de cada declaración de IA) |
 
 **Flujo de trabajo:** cada tarea en su propia rama (`feature/...`) creada desde `main` actualizado → commits → Pull Request hacia `main` → merge con *Create a merge commit* (para conservar los commits de cada integrante). Los dos primeros commits (el modelo de datos y el backend base) se subieron directo a `main` para dejar el repositorio inicial; desde ahí se trabajó con ramas y Pull Requests.
 
@@ -307,7 +307,7 @@ Tablero: [ReUse Campus Kanban](https://github.com/users/javier-suarez-cloud/proj
 | Mar 17-nov | Modelo de datos en MySQL, backend base, registro y login con hash y JWT. Repositorio público, issues y tablero Kanban |
 | Mié 18-nov | API de publicaciones (Javier) y frontend base con autenticación (Fabián); pantallas de publicaciones |
 | Jue 19-nov | Solicitudes, aceptar y rechazar con transacción y entregas en el backend (Javier); pantallas de solicitudes, recibidas y entregas (Fabián) |
-| Vie 20-nov | Rutas de administrador, sesión validada en la base y errores en JSON; pruebas automáticas (`npm test`) y seed; este README |
+| Vie 20-nov | Rutas de administrador, sesión validada en la base y errores en JSON; pruebas automáticas (`npm test`) y seed; este README (Javier). Pantalla de administración de usuarios y tabla de pruebas manuales en el navegador (Fabián) |
 
 ## 13. Aportes de cada integrante
 
@@ -317,8 +317,8 @@ Tablero: [ReUse Campus Kanban](https://github.com/users/javier-suarez-cloud/proj
 | Registro y login con hash y JWT; middleware de sesión y roles | Pantallas de publicaciones: listado, detalle, formulario, editar y cancelar |
 | API de publicaciones con sus reglas (RN01, RN02, RN17, RN18) | Pantallas de solicitudes: solicitar, Mis solicitudes, Recibidas, aceptar y rechazar |
 | Solicitudes, aceptar y rechazar con transacción y bloqueo de filas (RN03 a RN12, RN16) | Pantalla de entregas y confirmar entrega |
-| Entregas y confirmación (RN13 a RN15) | Revisión de los Pull Requests del backend |
-| Administración de usuarios, manejo de errores, seed, pruebas automáticas y README | Pantalla de administración y pruebas manuales en el navegador (pendientes) |
+| Entregas y confirmación (RN13 a RN15) | Pantalla de administración de usuarios, con *guard* de rol (`adminGuard`) |
+| Administración de usuarios, manejo de errores, seed, pruebas automáticas y README | Tabla de pruebas manuales en el navegador (ejecutadas con Claude controlando el navegador, a pedido suyo) |
 
 ## 14. Pruebas realizadas
 
