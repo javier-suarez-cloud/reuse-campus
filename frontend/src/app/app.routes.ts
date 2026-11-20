@@ -8,7 +8,8 @@ import { PublicacionForm } from './pages/publicacion-form/publicacion-form';
 import { MisSolicitudes } from './pages/mis-solicitudes/mis-solicitudes';
 import { SolicitudesRecibidas } from './pages/solicitudes-recibidas/solicitudes-recibidas';
 import { Entregas } from './pages/entregas/entregas';
-import { authGuard, visitanteGuard } from './guards/auth.guard';
+import { AdminUsuarios } from './pages/admin-usuarios/admin-usuarios';
+import { adminGuard, authGuard, visitanteGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Inicio, pathMatch: 'full' },
@@ -22,5 +23,6 @@ export const routes: Routes = [
   { path: 'solicitudes/mias', component: MisSolicitudes, canActivate: [authGuard] },
   { path: 'solicitudes/recibidas', component: SolicitudesRecibidas, canActivate: [authGuard] },
   { path: 'entregas', component: Entregas, canActivate: [authGuard] },
+  { path: 'admin/usuarios', component: AdminUsuarios, canActivate: [adminGuard] },
   { path: '**', redirectTo: '' },
 ];
