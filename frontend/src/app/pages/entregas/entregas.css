@@ -1,0 +1,18 @@
+.contenido { max-width: 800px; margin: 1.5rem auto; padding: 0 1rem; }
+.lista { display: flex; flex-direction: column; gap: 1rem; }
+.item { background: #fff; border: 1px solid #dde3ea; border-radius: 10px; padding: 1rem; }
+.item h2 { font-size: 1.1rem; margin: 0.5rem 0 0.2rem; }
+.meta { color: #52606d; font-size: 0.9rem; margin: 0 0 0.6rem; }
+.etiquetas { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.chip { background: #e8f1ea; color: #2e7d32; padding: 0.1rem 0.55rem; border-radius: 999px; font-size: 0.78rem; }
+.estado-PENDIENTE { background: #fff4e0; color: #b26a00; }
+.estado-COMPLETADA { background: #e8f5e9; color: #1b5e20; }
+.rol { background: #e3eefb; color: #1a5fb4; }
+button {
+  padding: 0.5rem 0.9rem; background: #2e7d32; color: #fff; border: 0;
+  border-radius: 6px; cursor: pointer; font-size: 0.95rem;
+}
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+.alerta { padding: 0.6rem 0.8rem; background: #fdecea; color: #b71c1c; border-radius: 6px; }
+.ok { padding: 0.6rem 0.8rem; background: #e8f5e9; color: #1b5e20; border-radius: 6px; }
+.vacio { color: #52606d; }

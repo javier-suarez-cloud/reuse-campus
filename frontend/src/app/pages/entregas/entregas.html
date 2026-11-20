@@ -1,0 +1,44 @@
+<section class="contenido">
+  <h1>Entregas</h1>
+
+  @if (error()) {
+    <p class="alerta">{{ error() }}</p>
+  }
+  @if (exito()) {
+    <p class="ok">{{ exito() }}</p>
+  }
+
+  @if (cargando()) {
+    <p>Cargando tus entregas...</p>
+  } @else if (entregas().length === 0 && !error()) {
+    <p class="vacio">
+      Aún no tienes entregas. Aparecen cuando se acepta una solicitud
+      (<a routerLink="/solicitudes/recibidas">Recibidas</a>).
+    </p>
+  } @else {
+    <div class="lista">
+      @for (e of entregas(); track e.id) {
+        <article class="item">
+          <div class="etiquetas">
+            <span class="chip estado-{{ e.estado }}">{{ e.estado }}</span>
+            <span class="chip rol">Eres {{ e.mi_rol === 'PROPIETARIO' ? 'el propietario' : 'el receptor' }}</span>
+          </div>
+          <h2>
+            <a [routerLink]="['/publicaciones', e.publicacion_id]">{{ e.publicacion_titulo }}</a>
+          </h2>
+          <p class="meta">
+            {{ e.mi_rol === 'PROPIETARIO' ? 'Se la entregas a' : 'Te la entrega' }}
+            {{ contraparte(e) }} · acordado el {{ e.fecha_acuerdo | date: 'dd/MM/yyyy HH:mm' }}
+          </p>
+          @if (e.fecha_entrega) {
+            <p class="meta">Entregada el {{ e.fecha_entrega | date: 'dd/MM/yyyy HH:mm' }}</p>
+          }
+
+          @if (e.estado === 'PENDIENTE') {
+            <button type="button" [disabled]="trabajando()" (click)="confirmar(e)">Confirmar entrega</button>
+          }
+        </article>
+      }
+    </div>
+  }
+</section>
