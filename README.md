@@ -86,9 +86,9 @@ reuse-campus/
     └── src/app/
         ├── app.config.ts             Router, HttpClient e interceptor
         ├── app.routes.ts             Rutas y guards
-        ├── services/                 auth, publicaciones, solicitudes y entregas
+        ├── services/                 auth, publicaciones, solicitudes, entregas y usuarios
         ├── interceptors/             token.interceptor.ts
-        ├── guards/                   authGuard y visitanteGuard
+        ├── guards/                   authGuard, visitanteGuard y adminGuard
         └── pages/                    Una carpeta por pantalla
 ```
 
@@ -309,7 +309,7 @@ Tablero: [ReUse Campus Kanban](https://github.com/users/javier-suarez-cloud/proj
 | #7 | Confirmar entrega y cierre de la publicación | Javier (back) y Fabián (front) | #17 y #20 |
 | #8 | Roles, errores y validaciones | Javier (back) y Fabián (front) | #21 (back) y #24 (front) |
 | #9 | Pruebas de reglas y situaciones inválidas documentadas | Javier (automáticas) y Fabián (manuales) | #22 (automáticas) y #25 (manuales) |
-| #10 | README, bitácora y declaración de uso de IA | Ambos | #23 y este documento (falta completar las filas de revisión de cada declaración de IA) |
+| #10 | README, bitácora y declaración de uso de IA | Ambos | #23, #26, #27, #28, #29 y #30 |
 
 **Flujo de trabajo:** cada tarea en su propia rama (`feature/...`) creada desde `main` actualizado → commits → Pull Request hacia `main` → merge con *Create a merge commit* (para conservar los commits de cada integrante). Los dos primeros commits (el modelo de datos y el backend base) se subieron directo a `main` para dejar el repositorio inicial; desde ahí se trabajó con ramas y Pull Requests.
 
